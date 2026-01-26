@@ -2,510 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WoahPhola Gen-2 App</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoahPhola Bootstrap MVP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Default Theme Variables */
             --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --text-main: #ffffff;
-            --text-accent: #58a6ff;
-            --btn-grad-1: #1f6feb;
-            --btn-grad-2: #238636;
-            --glow: 0 0 20px rgba(88, 166, 255, 0.3);
-            --xp-color: linear-gradient(90deg, #ff00cc, #3333ff);
+            --accent-teal: #00d2ff;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            transition: background 0.5s ease;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* --- 1. HEADER & TIME --- */
-        .top-bar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-weight: bold;
-        }
-
-        /* --- 2. BRANDING --- */
-        .brand-header {
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .woah-logo {
-            font-family: 'Russo One', sans-serif;
-            font-size: 2.8rem;
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-shadow: 
-                3px 3px 0px #000000, 
-                0 0 25px var(--text-accent);
-            margin: 0;
-            transform: skew(-5deg);
-        }
-
-        .woah-sub {
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 5px;
-            font-weight: bold;
-            color: rgba(255,255,255,0.6);
-        }
-
-        /* --- 3. GAMIFICATION XP BAR --- */
-        .xp-wrapper {
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 20px;
-            z-index: 10;
-        }
-        .level-text {
-            font-family: 'Russo One', sans-serif;
-            font-size: 0.8rem;
-            color: var(--text-accent);
-            margin-bottom: 5px;
-            text-align: left;
-            text-shadow: 1px 1px 0 #000;
-            display: flex;
-            justify-content: space-between;
-        }
-        .xp-container {
-            width: 100%;
-            background: rgba(0,0,0,0.5);
-            border-radius: 10px;
-            height: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .xp-fill {
-            height: 100%;
-            background: var(--xp-color);
-            width: 0%; /* Starts Empty */
-            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        /* --- 4. CONTROLS (Team/Player) --- */
-        .controls-container {
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 15px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.6);
+            /* --- LOGO AS BACKGROUND WATERMARK --- */
+            background-image: linear-gradient(rgba(13, 17, 23, 0.9), rgba(13, 17, 23, 0.9)), url('logo.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 60%;
+            background-attachment: fixed;
+            
             color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            outline: none;
-            backdrop-filter: blur(5px);
-            text-align: center;
-            text-transform: uppercase;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
 
-        /* Active Tracking Badge */
-        #playerBadge {
-            display: none;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--text-accent);
-            color: var(--text-accent);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            z-index: 10;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px var(--glow);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(88, 166, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(88, 166, 255, 0); }
-        }
-
-        /* --- 5. VISUALS (Crest & Card) --- */
-        .team-crest {
-            width: 140px;
-            height: 140px;
-            object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        /* --- LOGO AT TOP --- */
+        .main-logo {
+            width: 120px;
+            height: auto;
             margin-bottom: 10px;
-            z-index: 10;
-            transition: all 0.5s ease;
-            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--accent-teal));
         }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+
+        .brand-name {
+            font-family: 'Russo One', sans-serif;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            padding: 30px 20px;
+            background: rgba(22, 27, 34, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 320px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 10;
-            backdrop-filter: blur(15px);
+            max-width: 350px;
+            margin-top: 30px;
+            text-align: center;
         }
 
         #forceValue {
-            font-family: 'Russo One', sans-serif;
-            font-size: 5rem;
-            color: var(--text-accent);
-            margin: 5px 0;
-            line-height: 1;
-            text-shadow: var(--glow);
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--accent-teal);
         }
 
-        .unit { font-size: 1.2rem; opacity: 0.8; font-weight: 300; }
-        .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; }
-
-        /* --- 6. BUTTONS --- */
-        #connectBtn {
-            background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2));
-            border: 2px solid rgba(255,255,255,0.2);
-            padding: 18px 50px;
-            color: white;
-            font-family: 'Russo One', sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
+        button {
+            background: var(--accent-teal);
+            border: none;
+            padding: 15px 40px;
             border-radius: 50px;
+            font-family: 'Russo One', sans-serif;
+            font-size: 1rem;
+            margin-top: 20px;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 300px;
-            text-transform: uppercase;
-            z-index: 10;
-            transition: transform 0.1s;
         }
-        #connectBtn:active { transform: scale(0.95); }
-
-        #status { margin-top: 20px; font-size: 0.8rem; opacity: 0.6; z-index: 10; }
-        .powered-by { margin-top: auto; padding-top: 30px; font-size: 0.6rem; opacity: 0.3; z-index: 10; }
     </style>
 </head>
-<body onload="startTime()">
+<body>
 
-    <div class="top-bar">
-        <div id="currentDate">Loading...</div>
-        <div id="currentTime" class="live-time">00:00</div>
-    </div>
-
-    <div class="brand-header">
-        <h1 class="woah-logo">WOAH PHOLA!!</h1>
-        <div class="woah-sub">GEN-2 ACTIVE SYSTEM</div>
-    </div>
-
-    <div class="xp-wrapper">
-        <div class="level-text">
-            <span id="levelLabel">LVL 1: ROOKIE</span>
-            <span>XP: <span id="xpScore">0</span>/100</span>
-        </div>
-        <div class="xp-container">
-            <div id="xpBar" class="xp-fill"></div>
-        </div>
-    </div>
-
-    <div class="controls-container">
-        <select id="teamSelect" onchange="changeTeam()">
-            <option value="default">SELECT SQUAD...</option>
-            <option value="chiefs">Kaizer Chiefs</option>
-            <option value="sundowns">Mamelodi Sundowns</option>
-            <option value="pirates">Orlando Pirates</option>
-            <option value="capetown">Cape Town City</option>
-            <option value="supersport">SuperSport United</option>
-            <option value="amazulu">AmaZulu FC</option>
-            <option value="stellies">Stellenbosch FC</option>
-            <option value="arrows">Golden Arrows</option>
-            <option value="galaxy">TS Galaxy</option>
-            <option value="chippa">Chippa United</option>
-            <option value="sekhukhune">Sekhukhune United</option>
-            <option value="polokwane">Polokwane City</option>
-            <option value="richardsbay">Richards Bay</option>
-            <option value="royalam">Royal AM</option>
-            <option value="springboks">Springboks (Rugby)</option>
-        </select>
-
-        <select id="playerSelect" style="display:none;" onchange="updatePlayerBadge()">
-            <option value="">Select Player...</option>
-        </select>
-    </div>
-
-    <div id="playerBadge">TRACKING: NONE</div>
-
-    <img id="teamLogo" src="" alt="Team Logo" style="display: none;" class="team-crest">
+    <img src="logo.jpg" alt="Woah Phola Logo" class="main-logo">
+    <h1 class="brand-name">Woah Phola!!</h1>
 
     <div class="card">
-        <div class="label">Kick Force</div>
+        <p>CURRENT STRIKE FORCE</p>
         <div id="forceValue">0.0</div>
-        <span class="unit">G-FORCE</span>
+        <p>G-FORCE</p>
     </div>
 
-    <button id="connectBtn" onclick="connectToPod()">SYNC POD</button>
-    <div id="status">Status: Disconnected</div>
-
-    <div class="powered-by">POWERED BY WOAHPHOLA V2.5</div>
+    <button onclick="simulate()">SYNC SMART POD</button>
 
     <script>
-        // --- 1. GAMIFICATION LOGIC ---
-        let currentXP = 0;
-        let currentLevel = 1;
-        const maxXP = 100;
-
-        function addXP(amount) {
-            currentXP += amount;
-            
-            // Level Up Check
-            if (currentXP >= maxXP) {
-                currentXP = 0;
-                currentLevel++;
-                document.getElementById('levelLabel').innerText = "LVL " + currentLevel + ": PRO";
-                // Visual Flash for Level Up
-                document.getElementById('levelLabel').style.color = "#00ff00";
-                setTimeout(() => { document.getElementById('levelLabel').style.color = "var(--text-accent)"; }, 1000);
-            }
-
-            // Update Bar Width & Text
-            document.getElementById('xpScore').innerText = Math.floor(currentXP);
-            document.getElementById('xpBar').style.width = (currentXP / maxXP * 100) + "%";
-        }
-
-        // --- 2. TIME FUNCTION ---
-        function startTime() {
-            const today = new Date();
-            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-            document.getElementById('currentDate').innerHTML = today.toLocaleDateString('en-ZA', options);
-            let h = today.getHours(); let m = today.getMinutes(); let s = today.getSeconds();
-            m = checkTime(m); s = checkTime(s);
-            document.getElementById('currentTime').innerHTML = h + ":" + m + ":" + s;
-            setTimeout(startTime, 1000);
-        }
-        function checkTime(i) { return (i < 10) ? "0" + i : i; }
-
-        // --- 3. TEAM & PLAYER DATABASE ---
-        const teams = {
-            default: { colors: ['#0d1117', '#161b22', '#ffffff', '#58a6ff', '#1f6feb', '#238636'], logo: null, players: [] },
-            chiefs: {
-                colors: ['#000000', '#1a1a1a', '#FDB913', '#FDB913', '#FDB913', '#d4a017'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/2/22/Kaizer_Chiefs_logo.png',
-                players: ["Fiacre Ntwari (GK)", "Rushwin Dortley", "Inacio Miguel", "Reeve Frosler", "Bradley Cross", "Gaston Sirino", "Mduduzi Shabalala", "Yusuf Maart", "Ashley Du Preez", "Ranga Chivaviro"]
-            },
-            sundowns: {
-                colors: ['#055098', '#033a70', '#FDE018', '#FDE018', '#FDE018', '#efd016'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/e/e0/Mamelodi_Sundowns_logo.svg',
-                players: ["Ronwen Williams (GK)", "Khuliso Mudau", "Grant Kekana", "Teboho Mokoena", "Marcelo Allende", "Lucas Ribeiro", "Themba Zwane", "Peter Shalulile", "Iqraam Rayners", "Thapelo Maseko"]
-            },
-            pirates: {
-                colors: ['#1b1b1b', '#000000', '#ffffff', '#ff0000', '#ff0000', '#990000'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/a/a2/Orlando_Pirates_logo.svg',
-                players: ["Sipho Chaine (GK)", "Olisa Ndah", "Thabiso Sesane", "Deon Hotto", "Thalente Mbatha", "Patrick Maswanganyi", "Relebohile Mofokeng", "Monnapule Saleng", "Tshegofatso Mabasa", "Evidence Makgopa"]
-            },
-            capetown: {
-                colors: ['#001B3A', '#001226', '#FFD200', '#FFD200', '#0064a7', '#001B3A'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/a/ac/Cape_Town_City_FC_logo.svg',
-                players: ["Darren Keet (GK)", "Thamsanqa Mkhize", "Keanu Cupido", "Jaedin Rhodes", "Darwin Gonzalez", "Amadou Soukouna"]
-            },
-            supersport: {
-                colors: ['#122F5F', '#0c2042', '#ffffff', '#00ADEF', '#00ADEF', '#122F5F'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/0/07/SuperSport_United_logo.svg',
-                players: ["Ricardo Goss (GK)", "Thulani Hlatshwayo", "Grant Margeman", "Siphesihle Ndlovu", "Bradley Grobler", "Terrence Dzvukamanja"]
-            },
-            amazulu: {
-                colors: ['#00573F', '#003324', '#ffffff', '#C4D600', '#C4D600', '#00573F'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/7/70/AmaZulu_FC_logo.svg',
-                players: ["Veli Mothwa (GK)", "Riaan Hanamub", "Abbubaker Mobara", "Ben Motshwari", "Etiosa Ighodaro", "Hendrick Ekstein"]
-            },
-            stellies: {
-                colors: ['#681827', '#3d0e17', '#CFA34E', '#CFA34E', '#CFA34E', '#681827'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/0/07/Stellenbosch_FC_logo.svg',
-                players: ["Sage Stephens (GK)", "Fawaaz Basadien", "Jayden Adams", "Sihle Nduli", "Andre de Jong", "Devin Titus"]
-            },
-            arrows: {
-                colors: ['#006337', '#004225', '#FCE100', '#FCE100', '#FCE100', '#006337'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/4/4e/Golden_Arrows_logo.svg',
-                players: ["Sifiso Mlungwana (GK)", "Gladwin Shitolo", "Nduduzo Sibiya", "Knox Mutizwa", "Ryan Moon"]
-            },
-            galaxy: {
-                colors: ['#000000', '#1a1a1a', '#ffffff', '#e20613', '#e20613', '#000000'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/b/b2/TS_Galaxy_FC_logo.svg',
-                players: ["Fiacre Ntwari (GK)", "Pogiso Sanoka", "Mpho Mvelase", "Sphiwe Mahlangu", "Lehlohonolo Mojela"]
-            },
-            chippa: {
-                colors: ['#1E3F78', '#112342', '#ffffff', '#FF0000', '#1E3F78', '#FF0000'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/8/87/Chippa_United_FC_logo.svg',
-                players: ["Stanley Nwabali (GK)", "Justice Chabalala", "Baraka Majogoro", "Bienvenu Eva Nga", "Sinoxolo Kwayiba"]
-            },
-            sekhukhune: {
-                colors: ['#650018', '#40000f', '#ffffff', '#cfb53b', '#cfb53b', '#650018'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/1/1d/Sekhukhune_United_FC_logo.svg',
-                players: ["Badra Ali Sangare (GK)", "Nyiko Mobbie", "Linda Mntambo", "Jamie Webber", "Chibuike Ohizu"]
-            },
-            polokwane: {
-                colors: ['#FF6600', '#cc5200', '#ffffff', '#000000', '#000000', '#FF6600'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/5/53/Polokwane_City_FC_logo.svg',
-                players: ["Manuel Sapunga (GK)", "Bulelani Nikani", "Oswin Appollis", "Douglas Mapfumo", "Hlayisi Chauke"]
-            },
-            richardsbay: {
-                colors: ['#003366', '#002244', '#ffffff', '#B8860B', '#B8860B', '#003366'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/5/50/Richards_Bay_FC_logo.svg',
-                players: ["Salim Magoola (GK)", "Simphiwe Mcineka", "Sanele Barns", "Somila Ntsundwana", "Yanela Mbuthuma"]
-            },
-            royalam: {
-                colors: ['#000000', '#111111', '#C5B358', '#C5B358', '#C5B358', '#000000'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/7/7b/Royal_AM_FC_logo.svg',
-                players: ["Hugo Nyame (GK)", "Thabo Matlaba", "Kabelo Mahlasela", "Mfundo Thikazi", "Sedwyn George"]
-            },
-            springboks: {
-                colors: ['#003b28', '#002619', '#ffffff', '#ffb81c', '#ffb81c', '#003b28'],
-                logo: 'https://upload.wikimedia.org/wikipedia/en/c/c3/Springbok_logo.svg',
-                players: ["Siya Kolisi (C)", "Eben Etzebeth", "Pieter-Steph du Toit", "Handre Pollard", "Cheslin Kolbe", "Kurt-Lee Arendse", "Ox Nche", "Malcolm Marx", "Damian Willemse"]
-            }
-        };
-
-        function changeTeam() {
-            const selector = document.getElementById('teamSelect');
-            const playerSelect = document.getElementById('playerSelect');
-            const badge = document.getElementById('playerBadge');
-            const teamKey = selector.value;
-            const theme = teams[teamKey];
-            const root = document.documentElement;
-            const logoImg = document.getElementById('teamLogo');
-
-            // 1. Update Theme Colors
-            root.style.setProperty('--bg-color', theme.colors[0]);
-            root.style.setProperty('--card-bg', theme.colors[1]);
-            root.style.setProperty('--text-main', theme.colors[2]);
-            root.style.setProperty('--text-accent', theme.colors[3]);
-            root.style.setProperty('--btn-grad-1', theme.colors[4]);
-            root.style.setProperty('--btn-grad-2', theme.colors[5]);
-            root.style.setProperty('--glow', `0 0 25px ${theme.colors[3]}66`);
-
-            // 2. Update Logo & Massive Watermark
-            if(theme.logo) {
-                logoImg.src = theme.logo;
-                logoImg.style.display = "block";
-                document.body.style.backgroundImage = `url('${theme.logo}')`;
-                document.body.style.backgroundSize = "150%";
-                document.body.style.backgroundPosition = "center 20%";
-                document.body.style.backgroundRepeat = "no-repeat";
-                document.body.style.backgroundBlendMode = "overlay";
-                
-                // 3. Populate Player List
-                playerSelect.style.display = "block";
-                playerSelect.innerHTML = '<option value="">SELECT PLAYER TO TRACK...</option>';
-                theme.players.forEach(player => {
-                    const opt = document.createElement("option");
-                    opt.value = player;
-                    opt.innerHTML = player;
-                    playerSelect.appendChild(opt);
-                });
-            } else {
-                logoImg.style.display = "none";
-                document.body.style.backgroundImage = "none";
-                playerSelect.style.display = "none";
-            }
-            
-            // Reset Badge on team change
-            badge.style.display = "none";
-        }
-
-        function updatePlayerBadge() {
-            const player = document.getElementById('playerSelect').value;
-            const badge = document.getElementById('playerBadge');
-            if (player) {
-                badge.innerHTML = "TRACKING: " + player.toUpperCase() + " <span style='color:#00ff00'>● LIVE</span>";
-                badge.style.display = "block";
-            } else {
-                badge.style.display = "none";
-            }
-        }
-
-        // --- 4. BLUETOOTH CONNECTION ---
-        const serviceUuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-        const charUuid = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-        let device, server, service, characteristic;
-
-        async function connectToPod() {
-            try {
-                const btn = document.getElementById('connectBtn');
-                btn.innerText = "SCANNING...";
-                
-                device = await navigator.bluetooth.requestDevice({
-                    filters: [{ name: 'WoahPhola Pod' }],
-                    optionalServices: [serviceUuid]
-                });
-
-                btn.innerText = "CONNECTING...";
-                server = await device.gatt.connect();
-                service = await server.getPrimaryService(serviceUuid);
-                characteristic = await service.getCharacteristic(charUuid);
-
-                await characteristic.startNotifications();
-                characteristic.addEventListener('characteristicvaluechanged', handleKick);
-
-                document.getElementById('status').innerText = "Status: CONNECTED";
-                document.getElementById('status').style.color = "#00ff00";
-                btn.innerText = "POD ACTIVE";
-                document.getElementById('teamLogo').style.filter = "drop-shadow(0 0 30px #ffffff)";
-
-            } catch (error) {
-                console.log(error);
-                document.getElementById('connectBtn').innerText = "RETRY SYNC";
-                document.getElementById('status').innerText = "Connection Failed. Use Chrome/Bluefy.";
-            }
-        }
-
-        // --- 5. DATA HANDLING & XP INCREMENT ---
-        function handleKick(event) {
-            const value = new TextDecoder().decode(event.target.value);
-            document.getElementById('forceValue').innerText = value;
-            
-            // Flash Effect
-            document.body.style.opacity = "0.7";
-            setTimeout(() => { document.body.style.opacity = "1"; }, 100);
-
-            // Add 10 XP per kick!
-            addXP(10);
+        function simulate() {
+            const val = (Math.random() * 25).toFixed(1);
+            document.getElementById('forceValue').innerText = val;
         }
     </script>
 </body>
