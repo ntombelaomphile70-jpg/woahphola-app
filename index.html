@@ -1,1 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoahPhola Scout Hub</title>
+    <style>
+        /* --- THE VISUAL LAYER: DARK MODE & NEON --- */
+        body {
+            background-color: #0d0d0d; /* Deep Black */
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
 
+        h1 {
+            color: #00e5ff; /* Cyan Neon */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 30px;
+        }
+
+        /* --- THE CARDS --- */
+        .player-card {
+            background: linear-gradient(145deg, #1a1a1a, #222);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .player-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .player-team {
+            font-size: 0.8rem;
+            color: #00e5ff;
+        }
+
+        /* --- STATUS INDICATORS --- */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            font-size: 0.7rem;
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #00ff00;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        }
+
+        /* --- DATA GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-box {
+            background-color: #000;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* --- SYMMETRY ALERT LOGIC --- */
+        .stat-box.danger {
+            border: 1px solid #ff3333;
+            color: #ff3333;
+        }
+        
+        .stat-box.good {
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+        }
+
+        /* --- CONNECT BUTTON --- */
+        #connectBtn {
+            background-color: #00e5ff;
+            color: #000;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>WoahPhola</h1>
+    <div class="subtitle">Scout Hub // Live Session</div>
+
+    <div id="dashboard">
+        </div>
+
+    <button id="connectBtn" onclick="startDemo()">Sync All Pods</button>
+
+    <script>
+        // --- THE DATA LAYER: SIMULATED PLAYERS ---
+        const players = [
+            { id: 1, name: "Thabo M.", team: "Kaizer Chiefs U17", role: "Striker" },
+            { id: 2, name: "Jenny K.", team: "Banyana Dev Squad", role: "Midfield" },
+            { id: 3, name: "Sipho Z.", team: "Orlando Pirates Acad", role: "Defender" }
+        ];
+
+        let isDemoRunning = false;
+
+        function renderPlayers() {
+            const dashboard = document.getElementById('dashboard');
+            dashboard.innerHTML = '';
+
+            players.forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-team">${player.team}</div>
+                        </div>
+                        <div class="status-badge" id="status-${player.id}">
+                            <div class="pulse-dot"></div> LIVE
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Kick Force (G)</div>
+                            <div class="stat-value" id="force-${player.id}">0.0</div>
+                        </div>
+                        <div class="stat-box good" id="sym-box-${player.id}">
+                            <div class="stat-label">Leg Symmetry</div>
+                            <div class="stat-value" id="sym-${player.id}">100%</div>
+                        </div>
+                    </div>
+                `;
+                dashboard.appendChild(card);
+            });
+        }
+
+        // --- THE FUNCTIONAL LAYER: SIMULATION LOOP ---
+        function startDemo() {
+            if (isDemoRunning) return;
+            isDemoRunning = true;
+            document.getElementById('connectBtn').innerText = "Scanning Data Stream...";
+            
+            // Update stats every 1 second to simulate live match data
+            setInterval(() => {
+                players.forEach(player => {
+                    // Simulate random kick force between 8G and 65G
+                    const force = (Math.random() * (65 - 8) + 8).toFixed(1);
+                    
+                    // Simulate Symmetry (Thabo has an injury risk!)
+                    let sym;
+                    if (player.name.includes("Thabo")) {
+                        sym = Math.floor(Math.random() * (85 - 70) + 70); // Poor symmetry (70-85%)
+                    } else {
+                        sym = Math.floor(Math.random() * (100 - 92) + 92); // Good symmetry (92-100%)
+                    }
+
+                    // Update DOM
+                    document.getElementById(`force-${player.id}`).innerText = force + "G";
+                    document.getElementById(`sym-${player.id}`).innerText = sym + "%";
+
+                    // Visual Alert Logic
+                    const symBox = document.getElementById(`sym-box-${player.id}`);
+                    if (sym < 90) {
+                        symBox.classList.remove('good');
+                        symBox.classList.add('danger'); // Turn Red if risk detected
+                    } else {
+                        symBox.classList.remove('danger');
+                        symBox.classList.add('good');
+                    }
+                });
+            }, 1000);
+        }
+
+        // Run on load
+        renderPlayers();
+    </script>
+</body>
+</html>
